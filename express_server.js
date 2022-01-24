@@ -9,6 +9,7 @@ app.set("view engine", "ejs");
 // Convert buffer data into string
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Database info
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
@@ -25,24 +26,31 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// Render form for new TinyURL
+// Render form for new shortURL
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-// Submit a form to URLs
+// Submit a form and redirect to urls/:shortURL
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  let shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
-// View selected shortURL details
+// View specific URL details
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
   res.render("urls_show", templateVars);
+});
+
+// Redirect Short URLs
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
 });
 
 // View JSON details from database
