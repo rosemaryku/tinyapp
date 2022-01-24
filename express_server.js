@@ -44,12 +44,20 @@ app.get("/urls/:shortURL", (req, res) => {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
   };
+  if (templateVars.longURL === undefined) {
+    res.status(404);
+    return res.render("urls_error");
+  }
   res.render("urls_show", templateVars);
 });
 
 // Redirect Short URLs
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
+  if (longURL === undefined) {
+    res.status(404);
+    return res.render("urls_error");
+  }
   res.redirect(longURL);
 });
 
