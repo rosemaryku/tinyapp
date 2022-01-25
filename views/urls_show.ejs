@@ -22,7 +22,23 @@
           Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a>
         </p>
       </div>
-      <div class="card-footer text-muted"></div>
+      <div class="card-footer text-muted">
+        <h3>Edit</h3>
+
+        <form class="form-inline" method="POST" action="/urls/<%= shortURL %>">
+          <div class="form-group mb-2" style="width: 480px; margin: 0 auto">
+            <label for="newURL">NewURL:</label>
+            <input
+              class="form-control"
+              type="text"
+              name="newURL"
+              placeholder="http://"
+              style="width: 300px; margin: 1em"
+            />
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
     </div>
     <!-- Bootstrap JS -->
     <script
