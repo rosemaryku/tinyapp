@@ -31,7 +31,7 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-// Submit a form and redirect to urls/:shortURL
+// Submit new URL and redirect to urls/:shortURL
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
@@ -59,6 +59,13 @@ app.get("/u/:shortURL", (req, res) => {
     return res.render("urls_error");
   }
   res.redirect(longURL);
+});
+
+// Delete posts
+app.post("/urls/:shortURL/delete", (req, res) => {
+  const shortURL = req.params.shortURL;
+  delete urlDatabase[shortURL];
+  res.redirect("/urls");
 });
 
 // View JSON details from database
