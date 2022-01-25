@@ -3,7 +3,7 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 
-// Set up EJS as the Express vie engine
+// Set up EJS as the Express view engine
 app.set("view engine", "ejs");
 
 // Convert buffer data into string
@@ -76,9 +76,9 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-// Returns a string of 6 random alphanumeric characters:
+// Returns a random string of alphanumeric characters:
 function generateRandomString() {
-  let str = "abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let str = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let randomStr = "";
   for (i = 0; i < 6; i++) {
     let randomNum = Math.floor(Math.random() * str.length);
