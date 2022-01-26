@@ -1,15 +1,16 @@
 const express = require("express");
-const app = express();
-const PORT = 8080;
+const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+
+const app = express();
+const PORT = 8080;
+
 app.use(cookieParser());
-
-// Set up EJS as the Express view engine
-app.set("view engine", "ejs");
-
-// Convert buffer data into string
+app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.set("view engine", "ejs");
 
 // DATABASES //
 
@@ -18,13 +19,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com",
 };
 
-const users = {
-  userRandomID: {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur",
-  },
-};
+const users = {};
 
 // ROUTES //
 
@@ -35,13 +30,18 @@ app.get("/", (req, res) => {
 
 // All URLs
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const templateVars = {
+    user: users[req.cookies["user_id"]],
+    urls: urlDatabase,
+  };
   res.render("urls_index", templateVars);
 });
 
 // New URL
 app.get("/urls/new", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const templateVars = {
+    user: users[req.cookies["user_id"]],
+  };
   res.render("urls_new", templateVars);
 });
 
@@ -57,22 +57,16 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    username: req.cookies["username"],
+    user: users[req.cookies["user_id"]],
+    urls: urlDatabase,
   };
-  if (templateVars.longURL === undefined) {
-    res.status(404);
-    return res.render("urls_error");
-  }
   res.render("urls_show", templateVars);
 });
 
 // Redirect Short URLs
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
-  if (longURL === undefined) {
-    res.status(404);
-    return res.render("urls_error");
-  }
+
   res.redirect(longURL);
 });
 
@@ -88,33 +82,62 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
-// Login
-app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
-  res.redirect("/urls");
-});
-
 // Logout
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
-  res.redirect("/urls");
+  res.clearCookie("user_id");
+  res.redirect("/login");
 });
 
 // Register
 app.get("/register", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const templateVars = {
+    urls: urlDatabase,
+    users: users,
+    user: users[req.cookies["user_id"]],
+  };
   res.render("register", templateVars);
 });
 
 app.post("/register", (req, res) => {
-  users.userRandomID = {
-    id: userRandomId,
-    email: req.body.email,
-    password: req.body.password,
+  const { email, password } = req.body;
+  if (!email || !password) {
+    console.log("Error missing field");
+    return res.status(400);
+  }
+  if (isUser(users, email)) {
+    console.log("User already exists");
+    return res.status(400);
+  }
+
+  const id = generateRandomString();
+  const newUser = {
+    id,
+    email,
+    password,
   };
-  console.log(users);
+
+  users[id] = newUser;
+  res.cookie("user_id", id);
+  res.redirect("/urls");
 });
 
+app.get("/login", (req, res) => {
+  const templateVars = {
+    user: users[req.cookies["user_id"]],
+  };
+  res.render("login", templateVars);
+});
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  const user = findUser(users, email, password);
+  if (user) {
+    res.cookie("user_id", user);
+    res.redirect("urls");
+  } else res.status(403).redirect("/login");
+});
+
+//
 // MISC //
 
 // View JSON details from database
@@ -127,13 +150,12 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-// Activate server to listen for requests
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
 // HELPER FUNCTIONS //
-function generateRandomString() {
+const generateRandomString = () => {
   let str = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let randomStr = "";
   for (i = 0; i < 6; i++) {
@@ -141,4 +163,22 @@ function generateRandomString() {
     randomStr += str[randomNum];
   }
   return randomStr;
-}
+};
+
+const isUser = (users, email) => {
+  for (let keyID in users) {
+    if (users[keyID].email === email) return true;
+  }
+  return false;
+};
+
+const findUser = (users, email, password) => {
+  for (let id in users) {
+    if (users[id].email === email) {
+      if (users[id].password === password) {
+        return id;
+      } else console.log("Invalid password");
+    } else console.log("Invalid email");
+  }
+  return null;
+};

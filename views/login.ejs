@@ -15,37 +15,36 @@
       crossorigin="anonymous"
     />
 
-    <title>Register - TinyApp</title>
+    <title>Login - TinyApp</title>
   </head>
 
   <body>
     <%- include('partials/_header') %>
 
     <main style="margin: 1em">
-      <h3>Create Account</h3>
+      <h3>Login</h3>
 
-      <form action="/register" method="POST">
+      <form action="/login" method="POST">
         <div class="form-group mb-2">
           <label for="email">Email Address:</label>
           <input
             class="form-control"
             type="email"
+            placeholder = "Enter email"
             name="email"
-            placeholder="Enter Email"
-            style="width: 300px"
+            style="width: 400px"
           />
 
           <label for="password">Password:</label>
           <input
             class="form-control"
             type="password"
+            placeholder = "Password"
             name="password"
-            placeholder="Password"
-            style="width: 300px"
+            style="width: 400px"
           />
-          </div>
         </br>
-          <button type="submit" class="btn btn-primary">Register</button>
+          <button type="submit" class="btn btn-primary">Login</button>
         </div>
       </form>
     </main>
