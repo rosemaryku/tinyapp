@@ -11,24 +11,35 @@ app.set("view engine", "ejs");
 // Convert buffer data into string
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Database info
+// DATABASES //
+
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
 };
+
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+};
+
+// ROUTES //
 
 // Root or homepage
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
-// Displays all URLs
+// All URLs
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render("urls_index", templateVars);
 });
 
-// Render form for new shortURL
+// New URL
 app.get("/urls/new", (req, res) => {
   const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render("urls_new", templateVars);
@@ -89,6 +100,23 @@ app.post("/logout", (req, res) => {
   res.redirect("/urls");
 });
 
+// Register
+app.get("/register", (req, res) => {
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  res.render("register", templateVars);
+});
+
+app.post("/register", (req, res) => {
+  users.userRandomID = {
+    id: userRandomId,
+    email: req.body.email,
+    password: req.body.password,
+  };
+  console.log(users);
+});
+
+// MISC //
+
 // View JSON details from database
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
@@ -104,7 +132,7 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-// Returns a random string of alphanumeric characters:
+// HELPER FUNCTIONS //
 function generateRandomString() {
   let str = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let randomStr = "";
