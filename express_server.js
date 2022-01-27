@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 const PORT = 8080;
@@ -114,7 +115,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   }
 });
 
-// Update url ??
+// Update url - might need to come back to this
 app.post("/urls/:id", (req, res) => {
   if (urlDatabase[req.params.id].userID !== req.cookies["user_id"]) {
     return res.status(403).redirect("/login");
@@ -160,7 +161,14 @@ app.get("/register", (req, res) => {
 
 // Submit registration
 app.post("/register", (req, res) => {
-  const { email, password } = req.body;
+  const email = req.body.email;
+  const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  console.log("Password:", password);
+  console.log("Hashed Password:", hashedPassword);
+  console.log(bcrypt.compareSync("panda", hashedPassword));
+  console.log(typeof hashedPassword);
+
   if (!email || !password) {
     console.log("Error missing field");
     return res.status(400);
