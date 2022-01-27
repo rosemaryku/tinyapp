@@ -19,8 +19,6 @@
   <body>
     <header><%- include('partials/_header'); %></header>
     <main style="margin: 1em">
-      <% if (!user) {%> Please login or register! <% } else {%>
-
       <h3>My URLs</h3>
       <table class="table">
         <thead>
@@ -33,6 +31,7 @@
         </thead>
         <tbody>
           <% for(let url in urls) { %>
+
           <tr>
             <td><%= url %></td>
             <td><%= urls[url].longURL %></td>
@@ -51,8 +50,6 @@
           <% } %>
         </tbody>
       </table>
-
-      <% } %>
     </main>
     <!-- Bootstrap JS -->
     <script
