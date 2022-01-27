@@ -122,14 +122,12 @@ app.get("/urls/:shortURL", (req, res) => {
   }
 
   res.render("urls_show", templateVars);
-  console.log("Database:", urlDatabase);
 });
 
 // Use of short URL
 app.get("/u/:shortURL", (req, res) => {
   // if URL does not exist
   if (!urlDatabase[req.params.shortURL]) {
-    console.log("URL DOES NOT EXIST");
     res.status(403).send("Error webpage does not exist");
     return;
   }
