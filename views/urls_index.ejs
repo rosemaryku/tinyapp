@@ -19,6 +19,8 @@
   <body>
     <header><%- include('partials/_header'); %></header>
     <main style="margin: 1em">
+      <% if (!user) {%> Please login or register! <% } else {%>
+
       <h3>My URLs</h3>
       <table class="table">
         <thead>
@@ -33,7 +35,7 @@
           <% for(let url in urls) { %>
           <tr>
             <td><%= url %></td>
-            <td><%= urls[url] %></td>
+            <td><%= urls[url].longURL %></td>
             <td>
               <form method="GET" action="/urls/<%= url %>">
                 <button class="btn btn-outline-primary">Edit</button>
@@ -49,6 +51,8 @@
           <% } %>
         </tbody>
       </table>
+
+      <% } %>
     </main>
     <!-- Bootstrap JS -->
     <script

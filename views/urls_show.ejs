@@ -18,16 +18,18 @@
       <div class="card-header"></div>
       <div class="card-body">
         <h5 class="card-title">TinyURL for: <%= longURL %></h5>
+
         <p class="card-text">
-          Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a>
+          Short URL:
+          <a href="/u/<%= shortURL %>"> <%= shortURL %></a>
         </p>
       </div>
-      <div class="card-footer text-muted">
+      <!-- <div class="card-footer text-muted">
         <h3>Edit</h3>
 
         <form class="form-inline" method="POST" action="/urls/<%= shortURL %>">
-          <div class="form-group mb-2" style="width: 480px; margin: 0 auto">
-            <label for="newURL">NewURL:</label>
+          <div class="form-group mb-2" style="width: 510px; margin: 0 auto">
+            <label for="newURL">Update URL:</label>
             <input
               class="form-control"
               type="text"
@@ -38,7 +40,7 @@
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </form>
-      </div>
+      </div> -->
     </div>
     <!-- Bootstrap JS -->
     <script
