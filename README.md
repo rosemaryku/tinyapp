@@ -40,4 +40,4 @@ Screenshot of login page
 - Install all dependencies (using the `npm install` command).
 - Run the development web server using the `node express_server.js` command.
 - Complete the registration to start using the app.
-- Once registered, you can crate creating your shortened URLs.
+- Once registered, you can start creating your shortened URLs.
