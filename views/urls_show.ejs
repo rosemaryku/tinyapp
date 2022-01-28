@@ -27,7 +27,11 @@
       <div class="card-footer text-muted">
         <h3>Edit</h3>
 
-        <form class="form-inline" method="POST" action="/urls/<%= shortURL %>">
+        <form
+          class="form-inline"
+          method="POST"
+          action="/urls/<%= shortURL %>?_method=PUT"
+        >
           <div class="form-group mb-2" style="width: 510px; margin: 0 auto">
             <label for="newURL">Update URL:</label>
             <input

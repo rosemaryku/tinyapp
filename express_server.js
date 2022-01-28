@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const bcrypt = require("bcryptjs");
 const cookieSession = require("cookie-session");
+var methodOverride = require("method-override");
+
 const salt = bcrypt.genSaltSync(10);
 const {
   generateRandomString,
@@ -21,6 +23,7 @@ app.use(
     keys: ["key1", "key2"],
   })
 );
+app.use(methodOverride("_method"));
 
 app.set("view engine", "ejs");
 
@@ -138,7 +141,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 // Delete URL
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.delete("/urls/:shortURL/delete", (req, res) => {
   if (req.session.user_id !== urlDatabase[req.params.shortURL].userID) {
     res.status(403).res.redirect("/prompt");
   } else {
@@ -148,7 +151,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 // Update URL
-app.post("/urls/:id", (req, res) => {
+app.put("/urls/:id", (req, res) => {
   if (urlDatabase[req.params.id].userID !== req.session.user_id) {
     return res.status(403).render("error", { user: req.cookies.user_id });
   }
